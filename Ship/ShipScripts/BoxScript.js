@@ -1,29 +1,29 @@
 var BoxScript = pc.createScript('boxScript');
 
-BoxScript.attributes.add('Xspeed', {
+BoxScript.attributes.add('Acceleration',{
     type: 'number',
-    default: 0
-});
-
-BoxScript.attributes.add('Yspeed',{
-    type: 'number',
-    default: 0
-});
-
-BoxScript.attributes.add('Zspeed',{
-    type: 'number',
-    default: 0
+    title: 'Acceleration',
+    min: 0.1,
+    default:0.2
 });
 
 BoxScript.attributes.add('MaxSpeed',{
     type: 'number',
-    default:10
+    title: 'Max Speed',
+    min: 0,
+    default: 10
 });
 
 
-const acceleration = 0.2;
-const maxSpeed = this.MaxSpeed;
-const rotationSpeed = 3;
+
+
+
+
+
+
+var acceleration = 0.2;
+var maxSpeed = 10;
+var rotationSpeed = 3;
 
 
 
@@ -33,28 +33,22 @@ var rotationVectors = {
     xPlus: new pc.Quat().setFromEulerAngles(0,rotationSpeed,0)
 };
 
-var angle= 0;
+var speedVector = new pc.Vec3(0,0,0);
 
-
-
-var speedVector = new pc.Vec3(this.Xspeed,this.YSpeed,this.Zspeed);
 var accelerationVector = new pc.Vec3(acceleration,0,0);
 
 
 // initialize code called once per entity
 BoxScript.prototype.initialize = function() {
     
-    this.on('attr:Xspeed', function (value, prev) {
-        speedVector.x  = value;
+      this.on('attr', function(name, value, prev) {
+          if(name == 'Acceleration')
+              accelerationVector.x = value;
+          if(name == 'MaxSpeed')
+              maxSpeed = value;
+        
     });
     
-    this.on('attr:Yspeed', function (value, prev) {
-        speedVector.y  = value;
-    });
-    
-    this.on('attr:Zspeed', function (value, prev) {
-        speedVector.z  = value;
-    });
     
 };
 
@@ -62,8 +56,8 @@ BoxScript.prototype.initialize = function() {
 // update code called every frame
 BoxScript.prototype.update = function(dt) {
     
-    //console.log(speedVector.x + "    " + speedVector.z);
-
+    //console.log(speedVector.x + "    " + speedVector.z)
+    console.log(accelerationVector.x + "  " + maxSpeed);
     if(this.app.keyboard.isPressed(pc.KEY_DOWN) && speedVector.x <= maxSpeed){
         speedVector.add(accelerationVector);
     }
